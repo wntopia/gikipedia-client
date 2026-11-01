@@ -23,7 +23,7 @@ export function HomePage() {
       <HomeHero />
 
       {/* 좁은 화면에도 열을 정해 둔다. 없으면 암시적 열(auto)이 한 줄로 고정된 긴 제목만큼 넓어져 화면 밖으로 넘친다. */}
-      <div className="mx-auto grid max-w-[1120px] grid-cols-1 gap-4 px-8 pb-[100px] md:grid-cols-3">
+      <div className="mx-auto grid max-w-[1120px] grid-cols-1 gap-4 px-4 pb-[100px] sm:px-8 md:grid-cols-3">
         <div className={`${CELL} md:col-span-2 md:row-span-2`}>
           <RecentChanges />
         </div>

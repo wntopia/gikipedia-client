@@ -36,9 +36,9 @@ export async function MissingDocumentPage({
     <div className="min-h-screen bg-bg text-fg">
       <Header variant="plain" />
 
-      <div className="mx-auto max-w-[760px] px-8 pb-[120px] pt-[90px] text-center">
+      <div className="mx-auto max-w-[760px] px-4 pb-[120px] pt-14 text-center sm:px-8 sm:pt-[90px]">
         <MissingDocumentNotice title={title} />
-        <div className="mt-[60px]">
+        <div className="mt-12 sm:mt-[60px]">
           <Backlinks backlinks={backlinks} />
         </div>
       </div>

@@ -43,13 +43,13 @@ export function StatusNotice({
       <div className="mb-2.5 font-mono text-xs uppercase tracking-[.1em] text-fg-subtle">
         {label}
       </div>
-      <h1 className="mb-[14px] text-[28px] font-extrabold">{title}</h1>
+      <h1 className="mb-[14px] break-keep text-[24px] font-extrabold sm:text-[28px]">{title}</h1>
       {/* 한국어 문장이 '보세/요'처럼 낱말 중간에서 끊기지 않게 한다. */}
       <p className="mx-auto mb-[30px] max-w-[480px] break-keep text-[15px] leading-[1.8] text-fg-soft">
         {description}
       </p>
 
-      {actions && <div className="flex justify-center gap-2.5">{actions}</div>}
+      {actions && <div className="flex flex-wrap justify-center gap-2.5">{actions}</div>}
       {footnote && (
         <div className="mt-[26px] font-mono text-[11px] text-fg-subtle">
           {footnote}

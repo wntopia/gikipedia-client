@@ -10,7 +10,7 @@ import { SidebarCard } from "@/shared/ui";
 /** 홈에 보이는 문서 수. 2열 두 줄로 놓는다. */
 const POPULAR_DOCUMENT_COUNT = 4;
 
-const GRID = "grid grid-cols-2 gap-2.5";
+const GRID = "grid grid-cols-1 gap-2.5 min-[420px]:grid-cols-2";
 
 /** 홈 그리드의 '인기 문서' 칸. 제목은 바로 그리고 문서는 불러오는 동안 자리표시를 보인다. */
 export function PopularDocuments() {
