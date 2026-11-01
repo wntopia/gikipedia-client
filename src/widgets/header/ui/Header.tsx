@@ -40,14 +40,17 @@ export function Header(props: HeaderProps) {
       className={`${variant === "plain" ? "" : STICKY}`}
     >
       <div
-        className={`mx-auto flex h-[58px] items-center gap-[18px] px-8 ${CONTAINER_WIDTH[variant]}`}
+        className={`mx-auto flex h-[58px] items-center gap-3 px-4 sm:gap-[18px] sm:px-8 ${CONTAINER_WIDTH[variant]}`}
       >
         <Link
           href={ROUTES.home}
           className="flex flex-shrink-0 items-center gap-[9px] text-base font-extrabold"
         >
           <Logo />
-          지무위키
+          {/* 검색 화면의 좁은 폭에서는 입력칸에 자리를 내주고 로고만 남긴다. */}
+          <span className={variant === "search" ? "max-sm:sr-only" : undefined}>
+            지무위키
+          </span>
         </Link>
 
         {variant === "home" && (

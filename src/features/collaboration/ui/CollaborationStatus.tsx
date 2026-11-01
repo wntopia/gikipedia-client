@@ -55,7 +55,7 @@ export function CollaborationStatus({ snapshot }: CollaborationStatusProps) {
         {status.label}
       </span>
       {saved && (
-        <span className="truncate font-mono text-[11.5px] text-fg-subtle">
+        <span className="truncate font-mono text-[11.5px] text-fg-subtle max-lg:hidden">
           {saved.revision === null
             ? saved.byMe
               ? "바뀐 내용이 없어 리비전을 만들지 않았습니다"

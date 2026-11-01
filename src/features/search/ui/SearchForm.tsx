@@ -16,9 +16,9 @@ type SearchFormVariant = "compact" | "wide" | "hero";
 
 const FORM: Record<SearchFormVariant, string> = {
   compact:
-    "w-60 flex-shrink-0 gap-2 rounded-[9px] bg-surface-2 px-3 text-[13px] elevate-control focus-within:elevate-1",
+    "w-60 min-w-0 gap-2 rounded-[9px] bg-surface-2 px-3 text-[13px] elevate-control focus-within:elevate-1",
   wide:
-    "flex-1 gap-2 rounded-[9px] bg-surface-2 px-3 text-[13.5px] elevate-control focus-within:elevate-1",
+    "min-w-0 flex-1 gap-2 rounded-[9px] bg-surface-2 px-3 text-[13.5px] elevate-control focus-within:elevate-1",
   hero:
     "max-w-[620px] gap-3 rounded-xl bg-surface px-[18px] text-[15px] elevate-1 hover:elevate-2 focus-within:elevate-2",
 };
@@ -104,7 +104,7 @@ export function SearchForm({
       {shortcut && (
         <kbd
           aria-hidden
-          className="flex-shrink-0 rounded bg-elevated px-[5px] py-px font-mono text-[11px] text-fg-subtle group-focus-within:hidden"
+          className="flex-shrink-0 rounded bg-elevated px-[5px] py-px font-mono text-[11px] text-fg-subtle group-focus-within:hidden max-sm:hidden"
         >
           /
         </kbd>

@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 
 /** 미리보기·취소가 같은 모양이라 공유한다 */
 const SECONDARY_BUTTON =
-  "cursor-pointer rounded-lg bg-surface-2 elevate-control px-[14px] py-2 text-[13px] font-semibold text-fg-muted hover:text-fg-muted";
+  "flex-shrink-0 cursor-pointer rounded-lg bg-surface-2 elevate-control px-3 py-2 text-[13px] font-semibold text-fg-muted hover:text-fg-muted sm:px-[14px]";
 
 type EditorTopBarProps = {
   /**
@@ -46,17 +46,19 @@ export function EditorTopBar({
 }: EditorTopBarProps) {
   return (
     <header className="sticky top-0 z-50 bg-bg/[.92] elevate-header backdrop-blur-[10px]">
-      <div className="mx-auto flex h-[58px] max-w-[1120px] items-center gap-4 px-8">
+      <div className="mx-auto flex h-[58px] max-w-[1120px] items-center gap-2.5 px-4 sm:gap-4 sm:px-8">
         {/* 돌아갈 곳이 문서 화면이면 미리 가져오기가 문서를 조회해 조회수를 올린다 (CLAUDE.md '백엔드 연동과 인증') */}
         <Link
           href={backHref}
           prefetch={false}
           onNavigate={onLeave}
-          className="flex items-center gap-[7px] text-[13.5px] text-fg-soft hover:text-fg-soft"
+          className="flex min-w-0 items-center gap-[7px] text-[13.5px] text-fg-soft hover:text-fg-soft"
         >
-          <span className="text-[15px]">←</span> {backLabel}
+          <span className="text-[15px]">←</span>
+          {/* 좁은 화면에서는 저장 버튼까지 한 줄에 두려고 화살표만 남긴다. 이름은 화면 낭독기에 남긴다. */}
+          <span className="truncate max-md:sr-only">{backLabel}</span>
         </Link>
-        <span className="rounded-[5px] bg-accent/[.12] px-[9px] py-[3px] font-mono text-[11px] text-accent-hover">
+        <span className="flex-shrink-0 rounded-[5px] bg-accent/[.12] px-[9px] py-[3px] font-mono text-[11px] text-accent-hover max-sm:hidden">
           편집 중
         </span>
         {status}
@@ -65,13 +67,21 @@ export function EditorTopBar({
         {participants}
 
         <button type="button" onClick={onTogglePreview} className={SECONDARY_BUTTON}>
-          {showPreview ? "편집기로 돌아가기" : "미리보기"}
+          {showPreview ? (
+            <>
+              <span className="sm:hidden">편집기</span>
+              <span className="max-sm:hidden">편집기로 돌아가기</span>
+            </>
+          ) : (
+            "미리보기"
+          )}
         </button>
         <Link
           href={backHref}
           prefetch={false}
           onNavigate={onLeave}
-          className={SECONDARY_BUTTON}
+          // 휴대폰 폭에서는 같은 곳으로 가는 왼쪽 화살표가 대신한다.
+          className={`${SECONDARY_BUTTON} max-sm:hidden`}
         >
           취소
         </Link>
@@ -80,7 +90,7 @@ export function EditorTopBar({
           onClick={onSave}
           disabled={saving || saveBlockedReason !== undefined}
           title={saveBlockedReason}
-          className="cursor-pointer rounded-lg bg-accent px-4 py-2 text-[13px] font-bold text-on-accent elevate-control transition hover:bg-accent-hover disabled:cursor-default disabled:opacity-60 disabled:hover:bg-accent"
+          className="flex-shrink-0 cursor-pointer rounded-lg bg-accent px-4 py-2 text-[13px] font-bold text-on-accent elevate-control transition hover:bg-accent-hover disabled:cursor-default disabled:opacity-60 disabled:hover:bg-accent"
         >
           {saving ? "저장 중…" : "저장"}
         </button>
