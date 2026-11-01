@@ -33,16 +33,16 @@ export function RevisionStats({
   ];
 
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-2 sm:gap-3">
       {stats.map((stat) => (
         <div
           key={stat.label}
-          className="flex-1 rounded-xl bg-surface px-4 py-[14px] elevate-1"
+          className="min-w-0 flex-1 rounded-xl bg-surface px-3 py-3 elevate-1 sm:px-4 sm:py-[14px]"
         >
           <div className={`font-mono text-xl font-bold ${stat.tone}`}>
             {stat.value}
           </div>
-          <div className="mt-0.5 text-xs text-fg-subtle">{stat.label}</div>
+          <div className="mt-0.5 break-keep text-xs text-fg-subtle">{stat.label}</div>
         </div>
       ))}
     </div>

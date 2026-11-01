@@ -24,7 +24,7 @@ export async function RevisionPage(props: RevisionRouteProps) {
     <div className="min-h-screen bg-bg text-fg">
       <HistoryTopBar articleId={articleId} documentTitle={revision.title} />
 
-      <div className="mx-auto max-w-[1000px] px-8 pb-[120px] pt-9">
+      <div className="mx-auto max-w-[1000px] px-4 pb-[120px] pt-7 sm:px-8 sm:pt-9">
         <RevisionViewer revision={revision} />
       </div>
     </div>
