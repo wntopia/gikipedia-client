@@ -76,10 +76,11 @@ export function DocumentEditor({
         }
         // 새 문서는 제목 없이 열릴 수 있어, 빈 줄만 보이지 않게 자리를 알려 준다.
         placeholder="문서 제목"
-        className="mb-[18px] w-full border-b border-divider bg-transparent pb-[14px] text-[30px] font-extrabold tracking-[-.02em] text-fg outline-none placeholder:text-faint read-only:cursor-default"
+        className="mb-[18px] w-full border-b border-divider bg-transparent pb-[14px] text-[24px] font-extrabold sm:text-[30px] tracking-[-.02em] text-fg outline-none placeholder:text-faint read-only:cursor-default"
       />
 
-      <div className="flex gap-7">
+      {/* 좁은 화면에서는 대표 이미지 · 도움말을 본문 아래로 내린다. */}
+      <div className="flex flex-col gap-7 lg:flex-row">
         <div className="min-w-0 flex-1">
           {showPreview ? (
             <EditorPreview content={content} />
@@ -101,14 +102,14 @@ export function DocumentEditor({
                 }
                 readOnly={contentReadOnly ?? locked}
                 placeholder={TEXTAREA_PLACEHOLDER}
-                className="h-[480px] w-full resize-y rounded-xl bg-sunken p-[22px] elevate-inset font-mono text-sm leading-[1.9] text-fg-muted outline-none placeholder:text-faint"
+                className="h-[60vh] min-h-[320px] w-full resize-y sm:h-[480px] rounded-xl bg-sunken p-[22px] elevate-inset font-mono text-sm leading-[1.9] text-fg-muted outline-none placeholder:text-faint"
               />
               {contentOverlay}
             </div>
           )}
 
           {revisionNote && (
-            <div className="mt-4 flex items-center gap-2.5">
+            <div className="mt-4 flex flex-wrap items-center gap-2.5">
               <input
                 aria-label="편집 요약"
                 value={revisionNote.summary}
@@ -118,7 +119,7 @@ export function DocumentEditor({
                 readOnly={locked}
                 maxLength={MAX_SUMMARY_LENGTH}
                 placeholder="편집 요약 (예: 연혁 문단에 2026년 내용 추가)"
-                className="min-w-0 flex-1 rounded-[9px] bg-surface elevate-control px-[14px] py-2.5 text-[13.5px] text-fg outline-none"
+                className="min-w-0 flex-1 basis-[220px] rounded-[9px] bg-surface elevate-control px-[14px] py-2.5 text-[13.5px] text-fg outline-none"
               />
               <label className="flex flex-shrink-0 items-center gap-[7px] text-[13px] text-fg-soft">
                 <input
@@ -135,7 +136,9 @@ export function DocumentEditor({
             </div>
           )}
         </div>
-        {aside && <aside className="w-[260px] flex-shrink-0">{aside}</aside>}
+        {aside && (
+          <aside className="w-full lg:w-[260px] lg:flex-shrink-0">{aside}</aside>
+        )}
       </div>
     </div>
   );

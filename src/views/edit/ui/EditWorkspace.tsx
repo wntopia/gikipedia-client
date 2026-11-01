@@ -180,7 +180,7 @@ export function EditWorkspace({
         onLeave={confirmLeave}
       />
 
-      <div className="mx-auto max-w-[1120px] px-8 pb-[100px] pt-8">
+      <div className="mx-auto max-w-[1120px] px-4 pb-[100px] pt-6 sm:px-8 sm:pt-8">
         {notice && (
           // 고정된 상단 바(58px)에 가리지 않을 만큼 띄워서 스크롤한다.
           <div ref={alertRef} className="mb-5 scroll-mt-[74px]">
