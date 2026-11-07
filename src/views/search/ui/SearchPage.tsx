@@ -19,7 +19,7 @@ export async function SearchPage({
     <div className="min-h-screen bg-bg text-fg">
       <Header variant="search" query={query} />
 
-      <div className="mx-auto max-w-[900px] px-8 pb-[120px] pt-10">
+      <div className="mx-auto max-w-[900px] px-4 pb-[120px] pt-7 sm:px-8 sm:pt-10">
         {query ? (
           // 같은 화면 안에서 검색어·페이지만 바뀌면 이전 결과가 그대로 떠 있다가 바뀐다.
           // key로 새 경계를 만들어, 새 검색마다 자리표시부터 보이게 한다.

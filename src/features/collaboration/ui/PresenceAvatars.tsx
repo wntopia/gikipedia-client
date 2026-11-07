@@ -4,6 +4,8 @@ import { presenceColorVar, type PresenceParticipant } from "../model/presence";
 
 /** 상단 바에 얼굴로 보이는 사람 수. 넘으면 마지막 자리에 '+N'을 두고 이름은 그 툴팁에 모은다 */
 const MAX_VISIBLE = 4;
+/** 휴대폰 폭에서 보이는 자리 수. 상단 바에 저장 버튼까지 한 줄로 들어가도록 줄인다 */
+const MOBILE_MAX_VISIBLE = 2;
 
 /** 아바타 위에 올리면 보이는 이름표. 상단 바 아래로 펼친다 */
 const TOOLTIP =
@@ -32,6 +34,11 @@ export function PresenceAvatars({ participants }: PresenceAvatarsProps) {
     ? participants.slice(0, MAX_VISIBLE - 1)
     : participants;
   const hidden = overflow ? participants.slice(MAX_VISIBLE - 1) : [];
+  // 휴대폰 폭에서는 첫 사람과 '+N'만 보인다. 넓은 화면의 '+N'과 수가 달라 따로 그린다.
+  const mobileOverflow = participants.length > MOBILE_MAX_VISIBLE;
+  const mobileHidden = mobileOverflow
+    ? participants.slice(MOBILE_MAX_VISIBLE - 1)
+    : [];
 
   return (
     <div className="flex flex-shrink-0 items-center">
@@ -39,10 +46,14 @@ export function PresenceAvatars({ participants }: PresenceAvatarsProps) {
         함께 편집 중: {participants.map((p) => p.name).join(", ")}
       </span>
       <ul aria-hidden className="flex items-center pl-1.5">
-        {shown.map((participant) => (
+        {shown.map((participant, index) => (
           <li
             key={participant.key}
-            className="group relative -ml-1.5"
+            className={`group relative -ml-1.5 ${
+              mobileOverflow && index >= MOBILE_MAX_VISIBLE - 1
+                ? "max-sm:hidden"
+                : ""
+            }`}
             style={
               {
                 "--presence": presenceColorVar(participant.color),
@@ -63,8 +74,17 @@ export function PresenceAvatars({ participants }: PresenceAvatarsProps) {
             </span>
           </li>
         ))}
+        {mobileOverflow && (
+          <li className="group relative -ml-1.5 sm:hidden">
+            <span
+              className={`${AVATAR} bg-elevated font-mono text-[10.5px] text-fg-soft`}
+            >
+              +{mobileHidden.length}
+            </span>
+          </li>
+        )}
         {overflow && (
-          <li className="group relative -ml-1.5">
+          <li className="group relative -ml-1.5 max-sm:hidden">
             <span
               className={`${AVATAR} bg-elevated font-mono text-[10.5px] text-fg-soft`}
             >

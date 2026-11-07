@@ -24,7 +24,8 @@ export function useSlashShortcut(
       if (isTypingTarget(event.target)) return;
 
       const input = inputRef.current;
-      if (!input) return;
+      // 좁은 화면에서 숨긴 검색창(문서 상단 바)은 포커스를 받지 못한다. 그때 가로채면 `/`만 먹힌다.
+      if (!input || !input.checkVisibility()) return;
       // 막지 않으면 포커스가 옮겨 간 검색창에 `/`가 그대로 입력된다.
       event.preventDefault();
       input.focus();

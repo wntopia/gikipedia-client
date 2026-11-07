@@ -81,32 +81,33 @@ export async function MyPage() {
     <div className="min-h-screen bg-bg text-fg">
       <Header variant="home" />
 
-      <div className="mx-auto max-w-[1120px] px-8 pb-[120px] pt-11">
+      <div className="mx-auto max-w-[1120px] px-4 pb-[120px] pt-8 sm:px-8 sm:pt-11">
         {/* 프로필 */}
-        <div className="mb-[34px] flex items-center gap-[18px]">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-elevated elevate-2 text-[22px] font-bold text-fg-muted">
+        <div className="mb-[34px] flex items-center gap-3.5 sm:gap-[18px]">
+          <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-full bg-elevated elevate-2 text-xl font-bold text-fg-muted sm:h-16 sm:w-16 sm:text-[22px]">
             {getInitial(user)}
           </div>
-          <div>
-            <div className="text-[21px] font-extrabold">
+          <div className="min-w-0 flex-1">
+            <div className="truncate text-[19px] font-extrabold sm:text-[21px]">
               {getDisplayName(user)}
             </div>
             {caption && (
-              <div className="mt-[3px] font-mono text-xs text-fg-subtle">
+              <div className="mt-[3px] font-mono text-xs text-fg-subtle [overflow-wrap:anywhere]">
                 {caption}
               </div>
             )}
           </div>
-          <div className="flex-1" />
-          <SignoutButton />
+          <div className="flex-shrink-0">
+            <SignoutButton />
+          </div>
         </div>
 
         {/* 통계 */}
-        <div className="mb-9 flex gap-3">
+        <div className="mb-9 flex gap-2 sm:gap-3">
           {stats.map((s) => (
             <div
               key={s.label}
-              className="flex-1 rounded-xl bg-surface p-4 elevate-1"
+              className="min-w-0 flex-1 rounded-xl bg-surface p-3 elevate-1 sm:p-4"
             >
               <div
                 className={`font-mono text-[22px] font-bold ${
@@ -115,15 +116,15 @@ export async function MyPage() {
               >
                 {s.value ?? "—"}
               </div>
-              <div className="mt-[3px] text-[12.5px] text-fg-subtle">
+              <div className="mt-[3px] break-keep text-[12.5px] text-fg-subtle">
                 {s.label}
               </div>
             </div>
           ))}
         </div>
 
-        {/* 최근 기여 + 즐겨찾기 */}
-        <div className="flex gap-10">
+        {/* 최근 기여 + 즐겨찾기 — 좁은 화면에서는 즐겨찾기를 아래로 내린다 */}
+        <div className="flex flex-col gap-9 lg:flex-row lg:gap-10">
           <div className="min-w-0 flex-1">
             <div className="mb-[14px] text-base font-bold">최근 기여</div>
             <div className="overflow-hidden rounded-xl bg-surface elevate-1">
@@ -155,7 +156,7 @@ export async function MyPage() {
                       </span>
                       <span className="flex-shrink-0">{c.action}</span>
                     </div>
-                    <span className="font-mono text-[11px] text-fg-subtle">
+                    <span className="flex-shrink-0 font-mono text-[11px] text-fg-subtle">
                       {c.time}
                     </span>
                   </Link>
@@ -168,7 +169,7 @@ export async function MyPage() {
             </div>
           </div>
 
-          <div className="w-[320px] flex-shrink-0">
+          <div className="lg:w-[320px] lg:flex-shrink-0">
             <div className="mb-[14px] text-base font-bold">즐겨찾는 문서</div>
             <div className="rounded-xl bg-surface p-1.5 elevate-1">
               {myFavorites === null ? (

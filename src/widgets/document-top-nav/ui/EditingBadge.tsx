@@ -21,8 +21,12 @@ export function EditingBadge({ articleId }: { articleId: number }) {
       className="flex flex-shrink-0 items-center gap-2 rounded-[20px] bg-success/12 py-1.5 pl-2.5 pr-[13px] text-[12.5px] text-success-fg"
     >
       <span className="h-[7px] w-[7px] animate-[livepulse_2s_infinite] rounded-full bg-success" />
-      <b className="text-success-strong">{firstName}</b>
-      {others > 0 ? `외 ${others}명 편집 중` : "편집 중"}
+      {/* 휴대폰 폭에서는 누가 편집하는지 빼고 '편집 중'만 보인다. 이름은 title로 남는다. */}
+      <span className="hidden sm:inline">
+        <b className="text-success-strong">{firstName}</b>
+        {others > 0 ? ` 외 ${others}명` : ""}
+      </span>
+      편집 중
     </div>
   );
 }

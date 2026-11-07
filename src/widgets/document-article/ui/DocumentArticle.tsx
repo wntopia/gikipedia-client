@@ -27,7 +27,7 @@ export function DocumentArticle({
   const modifiedAt = article.updatedAt ?? article.createdAt;
 
   return (
-    <article className="w-[700px] flex-shrink-0 pb-[120px] pt-[52px]">
+    <article className="min-w-0 flex-1 pb-14 pt-8 sm:pt-[52px] lg:max-w-[700px] lg:pb-[120px]">
       {article.category && (
         <div className="mb-[18px] flex flex-wrap items-center gap-2">
           <span className="rounded-[5px] bg-surface-2 elevate-control px-2 py-0.5 font-mono text-[11px] text-fg-dim">
@@ -36,7 +36,7 @@ export function DocumentArticle({
         </div>
       )}
 
-      <h1 className="text-[38px] font-extrabold leading-[1.15] tracking-[-0.025em] [overflow-wrap:anywhere]">
+      <h1 className="text-[30px] font-extrabold sm:text-[38px] leading-[1.15] tracking-[-0.025em] [overflow-wrap:anywhere]">
         {article.title}
       </h1>
 

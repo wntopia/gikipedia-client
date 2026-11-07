@@ -14,12 +14,12 @@ export function LoadingPage() {
     <div role="status" className="min-h-screen bg-bg text-fg">
       <span className="sr-only">불러오는 중…</span>
 
-      <div className="mx-auto flex h-[58px] max-w-[1000px] items-center justify-between px-8">
+      <div className="mx-auto flex h-[58px] max-w-[1000px] items-center justify-between px-4 sm:px-8">
         <Skeleton className="h-5 w-[104px]" />
         <Skeleton round className="h-[34px] w-[34px]" />
       </div>
 
-      <div className="mx-auto max-w-[1000px] px-8 pb-[120px] pt-[52px]">
+      <div className="mx-auto max-w-[1000px] px-4 pb-[120px] pt-8 sm:px-8 sm:pt-[52px]">
         <Skeleton className="h-9 w-[38%]" />
         <Skeleton className="mt-[14px] h-3 w-[22%]" />
 

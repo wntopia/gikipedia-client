@@ -46,7 +46,7 @@ export async function EditHistoryPage(props: EditHistoryPageProps) {
     <div className="min-h-screen bg-bg text-fg">
       <HistoryTopBar articleId={articleId} documentTitle={article.title} />
 
-      <div className="mx-auto max-w-[1000px] px-8 pb-[120px] pt-9">
+      <div className="mx-auto max-w-[1000px] px-4 pb-[120px] pt-7 sm:px-8 sm:pt-9">
         <div className="mb-7">
           <RevisionStats
             // 리비전 1은 생성 시점 내용인데 첫 수정 때에야 기록된다. 수정 전 문서도 리비전 1이 있는 셈이다.

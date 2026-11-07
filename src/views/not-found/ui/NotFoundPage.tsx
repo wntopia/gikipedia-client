@@ -14,7 +14,7 @@ export function NotFoundPage() {
     <div className="min-h-screen bg-bg text-fg">
       <Header variant="plain" />
 
-      <div className="mx-auto max-w-[760px] px-8 pb-[120px] pt-[90px] text-center">
+      <div className="mx-auto max-w-[760px] px-4 pb-[120px] pt-14 text-center sm:px-8 sm:pt-[90px]">
         <StatusNotice
           mark="404"
           tone="neutral"

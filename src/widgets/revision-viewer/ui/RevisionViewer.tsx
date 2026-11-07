@@ -23,7 +23,7 @@ export function RevisionViewer({ revision }: RevisionViewerProps) {
 
       {/* 문서 상세 본문과 같은 폭 · 제목 크기로 그려 지금 문서와 견주어 읽기 쉽게 한다. */}
       <article className="max-w-[700px]">
-        <h1 className="text-[38px] font-extrabold leading-[1.15] tracking-[-0.025em] [overflow-wrap:anywhere]">
+        <h1 className="text-[30px] font-extrabold sm:text-[38px] leading-[1.15] tracking-[-0.025em] [overflow-wrap:anywhere]">
           {revision.title}
         </h1>
         <div className="mt-[46px]">

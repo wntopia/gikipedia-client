@@ -25,18 +25,19 @@ export function DocumentTopNav({
 }) {
   return (
     <header className="sticky top-0 z-50 bg-bg/85 elevate-header backdrop-blur-[10px]">
-      <div className="mx-auto flex h-[58px] max-w-[1120px] items-center gap-[18px] px-8">
+      <div className="mx-auto flex h-[58px] max-w-[1120px] items-center gap-2.5 px-4 sm:gap-[18px] sm:px-8">
         {/* 로고 */}
         <Link
           href={ROUTES.home}
           className="flex flex-shrink-0 items-center gap-[9px] text-base font-extrabold tracking-[-0.01em]"
         >
           <Logo />
-          지무위키
+          <span className="max-sm:sr-only">지무위키</span>
         </Link>
 
         {/* 위치 경로 — 제목이 길면 검색·편집 버튼을 밀어내지 않고 말줄임된다 */}
-        <div className="flex min-w-0 items-center gap-1.5 text-[13px] text-fg-subtle">
+        {/* 좁은 화면에서는 본문 첫머리의 분류 · 제목과 겹쳐 빼고, 그 자리를 버튼에 준다. */}
+        <div className="hidden min-w-0 items-center gap-1.5 text-[13px] text-fg-subtle md:flex">
           {categoryName && (
             <>
               <span className="flex-shrink-0">{categoryName}</span>
@@ -48,8 +49,10 @@ export function DocumentTopNav({
 
         <div className="flex-1" />
 
-        {/* 검색 */}
-        <SearchForm variant="compact" />
+        {/* 검색 — 휴대폰 폭에서는 편집 · 메뉴 버튼이 들어갈 자리가 없어 뺀다. 홈과 검색 화면에서 찾을 수 있다. */}
+        <div className="hidden min-w-0 sm:flex">
+          <SearchForm variant="compact" />
+        </div>
 
         {/* 편집 중 표시 */}
         <EditingBadge articleId={articleId} />
@@ -60,7 +63,7 @@ export function DocumentTopNav({
           // 편집 화면은 탭 제목에 쓸 문서를 조회한다. 미리 가져오면 문서를 열 때마다 그 조회가 한 번 더 일어나
           // 백엔드를 부르고 조회수를 셀 수 있어, 누른 뒤에만 가져온다.
           prefetch={false}
-          className="flex flex-shrink-0 items-center gap-[7px] rounded-[9px] bg-surface-2 elevate-control px-[15px] py-2 transition hover:elevate-1 text-[13.5px] font-semibold text-fg"
+          className="flex flex-shrink-0 items-center gap-[7px] rounded-[9px] bg-surface-2 elevate-control px-3 py-2 sm:px-[15px] transition hover:elevate-1 text-[13.5px] font-semibold text-fg"
         >
           <span className="inline-block h-3 w-3 rounded-[3px] border-[1.6px] border-fg-soft" />
           편집

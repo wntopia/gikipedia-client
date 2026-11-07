@@ -44,7 +44,8 @@ export async function DocumentPage(props: ArticleRouteProps) {
         categoryName={article.category?.name}
       />
 
-      <div className="mx-auto flex max-w-[1120px] gap-12 px-8">
+      {/* 넓은 화면은 본문 오른쪽에 사이드바를 띄우고, 좁은 화면은 본문 아래로 내린다. */}
+      <div className="mx-auto flex max-w-[1120px] flex-col px-4 sm:px-8 lg:flex-row lg:gap-12">
         <DocumentArticle
           article={article}
           blocks={blocks}
@@ -54,8 +55,8 @@ export async function DocumentPage(props: ArticleRouteProps) {
         />
 
         {/* 우측 플로팅 사이드바 */}
-        <aside className="w-[260px] flex-shrink-0 pt-[52px]">
-          <div className="sticky top-[78px] flex flex-col gap-4">
+        <aside className="pb-[100px] lg:w-[260px] lg:flex-shrink-0 lg:pb-0 lg:pt-[52px]">
+          <div className="flex flex-col gap-4 lg:sticky lg:top-[78px]">
             <DocumentToc items={extractToc(blocks)} />
             <RecentRevisions
               articleId={articleId}
