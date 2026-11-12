@@ -56,7 +56,9 @@ PR을 올리면 CI(`.github/workflows/ci.yml`)가 `npm ci` → `lint` → `typec
 `API_BASE_URL`을 바꾸면 개발 서버를 다시 띄운다. 프록시 목적지는 서버를 띄울 때(배포본은 빌드할 때) 고정된다.
 
 로그인은 프론트가 백엔드의 `DATAGSM_OAUTH_REDIRECT_URI`와 같은 오리진에 떠 있을 때만 끝까지 된다.
-지금 팀 개발 서버는 `http://localhost:3000/callback`으로 맞춰 두었으므로 `npm run dev`의 기본 포트(3000)를 바꾸지 않는다.
+지금 팀 개발 서버는 배포 주소(`https://gikipedia.https.gsmsv.site/callback`)로 맞춰 두어, 로컬(`localhost:3000`)에서
+개발 서버에 붙이면 화면과 공개 데이터는 보이지만 로그인은 끝까지 되지 않는다. 로그인이 필요한 화면은 로컬 백엔드를
+`http://localhost:3000/callback`으로 띄워 확인한다.
 
 ### 브라우저는 백엔드를 직접 부르지 않는다 (rewrites 프록시)
 
@@ -71,7 +73,9 @@ PR을 올리면 CI(`.github/workflows/ci.yml`)가 `npm ci` → `lint` → `typec
 
 실시간 공동편집 WebSocket(`/ws/**`)도 같은 rewrites로 백엔드에 넘긴다. 핸드셰이크에 세션 쿠키가 실리려면 같은 오리진이어야
 하기 때문이다. 백엔드는 WebSocket의 `Origin`을 검사하므로 **프론트 오리진을 백엔드의 `spring.security.cors.allowed-origins`에
-넣어야 한다** (빠지면 핸드셰이크가 403이고, 편집 화면은 '연결 끊김'에서 다시 연결만 시도한다).
+넣어야 한다** (빠지면 핸드셰이크가 403이고, 편집 화면은 다시 연결을 시도하다 '공동편집 서버에 연결할 수 없습니다'를 띄운다).
+WebSocket 업그레이드를 넘기지 않는 호스팅(Vercel의 rewrites 등)에서는 핸드셰이크가 400이 되어 문서를 고칠 수 없다.
+그래서 배포는 Next 서버를 직접 띄우는 온프레미스 서버로 한다(아래 '배포').
 
 호출 함수는 실행 위치와 쓰임에 따라 셋으로 나뉜다.
 
@@ -104,6 +108,32 @@ PR을 올리면 CI(`.github/workflows/ci.yml`)가 `npm ci` → `lint` → `typec
 
 성공·실패 주소는 상대 경로라 브라우저가 프론트 오리진 기준으로 해석한다. 로그인 전에 보던 화면은
 백엔드가 기억해 주지 않으므로 프론트가 `sessionStorage`에 맡겨 두었다가 `/signin/callback`에서 꺼내 이동한다.
+
+## 배포
+
+`main`에 머지되면 CI가 통과한 뒤 CD(`.github/workflows/cd.yml`)가 온프레미스 서버에 배포한다.
+Actions 탭의 CD에서 'Run workflow'로 손으로 다시 배포할 수도 있다.
+
+| 항목 | 값 |
+|---|---|
+| 주소 | `https://gikipedia.https.gsmsv.site` (gsmsv 콘솔의 HTTPS 도메인 → VM 내부 포트 3000) |
+| 실행 | systemd `gikipedia-frontend`가 `/srv/gikipedia-frontend/current`에서 `next start -p 3000` |
+| 배포 스크립트 | `/srv/gikipedia-frontend/deploy.sh` (`/srv/deploy.sh`는 이 파일로 가는 링크) |
+| 환경 변수 | `/srv/gikipedia-frontend/shared/.env.local` (`API_BASE_URL`). 배포 때마다 빌드 폴더로 복사된다 |
+
+배포 스크립트는 `origin/main`을 `releases/<커밋>`에 따로 받아 `npm ci` · `npm run build`를 하고, 끝나면 `current` 링크를
+바꾼 뒤 재시작한다. 빌드하는 동안에도 사이트는 이전 버전으로 돌고, 빌드가 실패하면 링크를 바꾸지 않는다.
+재시작 뒤 응답이 없으면 이전 버전으로 되돌린다. 최근 3개 버전만 남긴다.
+
+CD는 저장소 Secrets의 배포 전용 키(`DEPLOY_SSH_*`)로 접속한다. 서버는 이 키에 배포 스크립트만 허용한다
+(`authorized_keys`의 `restrict,command=`). 이전 버전으로 손으로 되돌리려면 서버에서 `current` 링크를
+`releases/` 아래 다른 폴더로 바꾸고 `sudo systemctl restart gikipedia-frontend`를 실행한다.
+
+`API_BASE_URL`을 바꾸려면 `shared/.env.local`을 고친 뒤 서버에서 `FORCE=1 /srv/deploy.sh`로 다시 빌드한다. 빌드할 때 고정되는 값이라
+재시작만으로는 바뀌지 않고, 같은 커밋은 `FORCE=1` 없이는 건너뛴다.
+
+배포 스크립트와 systemd 설정의 원본은 저장소의 `deploy/`다. CD는 서버에 있는 사본을 실행하므로, `deploy/`를 고쳐 머지했다면
+서버의 `/srv/gikipedia-frontend/deploy.sh`(설정은 `/etc/systemd/system/gikipedia-frontend.service` 후 `sudo systemctl daemon-reload`)에도 복사한다.
 
 ## 기여
 

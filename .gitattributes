@@ -1,0 +1,2 @@
+# 서버에 그대로 복사해 실행하는 파일이다. Windows에서 받아도 CRLF가 되면 bash가 실행하지 못한다.
+deploy/* text eol=lf
