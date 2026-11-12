@@ -33,6 +33,15 @@ const EXTERNAL_SETTLE_MS = 2_000;
 const RECONNECT_BASE_MS = 1_000;
 const RECONNECT_MAX_MS = 30_000;
 /**
+ * `bootstrap`까지 가지 못한 연결이 이만큼 이어지면 서버에 닿지 않는다고 안내한다(`unreachable`). 다시 시도는 그대로 한다.
+ *
+ * 브라우저는 핸드셰이크가 실패한 이유(400 · 403 · 502 …)를 알려 주지 않아(닫힘 코드 1006) 원인으로는 가를 수 없고
+ * 연속 실패 횟수로 정한다. 서버 재시작이나 네트워크 전환 같은 잠깐의 끊김은 한두 번 안에 풀리므로 그때는 상단 바의
+ * 상태만 바꾼다. 바로 거절되는 경우 세 번째 실패는 백오프(1초 · 2초)를 지나 약 3초 뒤라, 고칠 수 없는 본문과 막힌
+ * 저장 버튼을 이유 없이 보는 시간이 길지 않다.
+ */
+const UNREACHABLE_AFTER_FAILURES = 3;
+/**
  * 네트워크가 끊겨도 브라우저는 TCP가 포기할 때까지(수 분) `close`를 주지 않는다. 보낸 데이터가 이 간격으로 세 번
  * 연속 빠져나가지 않거나 연결이 이만큼 열리지 않으면 끊긴 것으로 보고 다시 연결한다.
  */
@@ -73,6 +82,11 @@ export type ConnectionFailure = "unauthorized" | "rejected";
 export type CollaborationSnapshot = {
   status: ConnectionStatus;
   failure: ConnectionFailure | null;
+  /**
+   * 연결이 `bootstrap`까지 가지 못하고 연달아 실패해(`UNREACHABLE_AFTER_FAILURES`) 서버에 닿지 않는 것으로 본다.
+   * 다시 시도는 계속하고, 연결되어 시작 상태를 받으면 풀린다. `failure`가 있으면 그쪽 안내가 우선이다
+   */
+  unreachable: boolean;
   /** 지금 편집 상태를 한 번이라도 받았다. 그 전에는 본문을 고칠 수 없다 */
   ready: boolean;
   /** 지금 본문. 처음 받기 전에는 화면을 그릴 때 받은 본문이다 */
@@ -167,6 +181,8 @@ export class CollaborationProvider {
   private connectStartedAt = 0;
   private stalledTicks = 0;
   private attempt = 0;
+  /** `bootstrap`을 받기 전에 닫힌 연결이 이어진 횟수. 시작 상태를 받으면 0이 된다 */
+  private failedAttempts = 0;
   private connectionSerial = 0;
   /** `bootstrap`보다 먼저 도착한 update. 서버가 방에 넣은 직후 `bootstrap`을 보내기 전에 남의 릴레이가 끼어들 수 있다 */
   private queuedBeforeBootstrap: Uint8Array[] = [];
@@ -197,6 +213,7 @@ export class CollaborationProvider {
     this.snapshot = {
       status: "connecting",
       failure: null,
+      unreachable: false,
       ready: false,
       text: initialText,
       imageUrl: options.initialImageUrl,
@@ -406,6 +423,8 @@ export class CollaborationProvider {
     this.settleSave({ ok: false, reason: "connection-lost" });
     if (!this.running) return;
 
+    // 시작 상태를 받은 뒤의 끊김은 실패가 아니다. 그 뒤로 다시 연결하지 못한 시도부터 센다.
+    if (!bootstrapped) this.failedAttempts++;
     this.update({
       status: this.everBootstrapped ? "reconnecting" : "connecting",
     });
@@ -441,8 +460,19 @@ export class CollaborationProvider {
     this.scheduleReconnect();
   }
 
-  /** 지수 백오프(1초부터 두 배씩, 최대 30초). 여러 사람이 한꺼번에 다시 붙지 않게 ±20%를 흔든다. */
+  /**
+   * 지수 백오프(1초부터 두 배씩, 최대 30초). 여러 사람이 한꺼번에 다시 붙지 않게 ±20%를 흔든다.
+   *
+   * 서버에 닿지 않는다는 안내도 여기서 켠다. 로그인이 풀렸는지 · 들일 수 없는 계정인지 가른 뒤에만 이리 오므로,
+   * 그 안내가 뜰 자리에 잠깐 이 안내가 먼저 비치지 않는다.
+   */
   private scheduleReconnect() {
+    if (
+      this.failedAttempts >= UNREACHABLE_AFTER_FAILURES &&
+      !this.snapshot.unreachable
+    ) {
+      this.update({ unreachable: true });
+    }
     this.clearTimer("retryTimer");
     const base = Math.min(
       RECONNECT_MAX_MS,
@@ -637,6 +667,7 @@ export class CollaborationProvider {
     this.socketBootstrapped = true;
     this.everBootstrapped = true;
     this.attempt = 0;
+    this.failedAttempts = 0;
     const queued = this.queuedBeforeBootstrap;
     this.queuedBeforeBootstrap = [];
     queued.forEach((update) => this.applyRemoteUpdate(update));
@@ -655,6 +686,7 @@ export class CollaborationProvider {
     this.update({
       status: "connected",
       failure: null,
+      unreachable: false,
       ready: true,
       text: this.text.toString(),
       undelivered: this.snapshot.undelivered && !delivered,

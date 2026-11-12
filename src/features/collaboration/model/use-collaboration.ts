@@ -9,6 +9,7 @@ import {
 const INACTIVE: CollaborationSnapshot = {
   status: "connecting",
   failure: null,
+  unreachable: false,
   ready: false,
   text: "",
   imageUrl: null,
