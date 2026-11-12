@@ -465,9 +465,13 @@ export class CollaborationProvider {
    *
    * 서버에 닿지 않는다는 안내도 여기서 켠다. 로그인이 풀렸는지 · 들일 수 없는 계정인지 가른 뒤에만 이리 오므로,
    * 그 안내가 뜰 자리에 잠깐 이 안내가 먼저 비치지 않는다.
+   *
+   * `student`가 없는 계정은 켜지 않는다. 핸드셰이크부터 실패하면 1011 거절까지 가지 못해 `rejected`가 되지 않는데,
+   * 이 계정은 연결되어도 고칠 수 없으므로 서버에 닿는지는 의미가 없고, 처음부터 보이는 계정 안내를 덮으면 안 된다.
    */
   private scheduleReconnect() {
     if (
+      this.options.studentAccount &&
       this.failedAttempts >= UNREACHABLE_AFTER_FAILURES &&
       !this.snapshot.unreachable
     ) {
