@@ -1,5 +1,5 @@
 import { ROUTES } from "@/shared/config";
-import { MissingLink, WikiLink } from "@/shared/ui";
+import { ExternalLink, MissingLink, WikiLink } from "@/shared/ui";
 import type { WikiLinkTargets } from "../model/link-targets";
 import type {
   WikiBlock,
@@ -123,6 +123,12 @@ function Inline({ nodes, variant, linkTargets }: InlineProps) {
               linkTargets={linkTargets}
             />
           </b>
+        );
+      case "external":
+        return (
+          <ExternalLink key={index} href={node.href}>
+            {node.label}
+          </ExternalLink>
         );
       case "link": {
         // undefined: 확인하지 못함, null: 없는 문서
