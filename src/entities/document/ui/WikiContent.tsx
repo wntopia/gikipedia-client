@@ -125,11 +125,7 @@ function Inline({ nodes, variant, linkTargets }: InlineProps) {
           </b>
         );
       case "external":
-        return (
-          <ExternalLink key={index} href={node.href}>
-            {node.label}
-          </ExternalLink>
-        );
+        return <ExternalLink key={index} href={node.href} label={node.label} />;
       case "link": {
         // undefined: 확인하지 못함, null: 없는 문서
         const articleId = linkTargets?.get(node.target);
