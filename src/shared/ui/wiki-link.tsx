@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { ExternalLinkIcon } from "@/shared/icons";
 
 type WikiLinkProps = {
   href: string;
@@ -20,6 +21,36 @@ export function WikiLink({ href, children }: WikiLinkProps) {
     >
       {children}
     </Link>
+  );
+}
+
+/**
+ * 바깥 사이트로 가는 링크. 위키 링크와 같은 색에 화살표를 붙여 구별한다.
+ * 새 탭에서 연다 — 편집 미리보기에서 눌러도 쓰던 본문이 있는 화면을 떠나지 않는다.
+ * 주소는 누구나 적을 수 있어, 열린 사이트가 이 탭을 조작하거나 위키 주소를 받아 가지 못하게 `noopener noreferrer`를 붙인다.
+ */
+export function ExternalLink({ href, label }: { href: string; label: string }) {
+  // 마지막 글자와 화살표를 한 덩어리로 묶는다. 긴 주소는 아무 데서나 줄을 바꾸게 했는데(`wrap-anywhere`),
+  // 그러면 화살표만 다음 줄 첫머리로 떨어질 수 있다. 글자는 자모·이모지가 갈라지지 않게 자소 단위로 자른다.
+  const graphemes = Array.from(
+    new Intl.Segmenter().segment(label),
+    ({ segment }) => segment,
+  );
+  const last = graphemes.pop() ?? "";
+
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="border-b border-accent/35 text-accent wrap-anywhere"
+    >
+      {graphemes.join("")}
+      <span className="whitespace-nowrap">
+        {last}
+        <ExternalLinkIcon className="ml-0.5 inline-block align-[-1px]" />
+      </span>
+    </a>
   );
 }
 

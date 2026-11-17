@@ -15,7 +15,7 @@ const MAX_SUBHEADING_MARK = 4;
  * 검색 스니펫에 남은 위키 문법 기호를 걷어내, 문서 화면에서 보이는 글자만 남긴다.
  *
  * 백엔드는 `== 제목 ==`과 `[[문서명]]`만 지운 본문으로 스니펫을 만든다. 문서 화면(`parseWikiText`)이 그리는
- * 나머지 문법 — `=== 소제목 ===`, `[[문서명|보일 글자]]`, `'''굵게'''` — 은 기호째 오므로 여기서 벗긴다.
+ * 나머지 문법 — `=== 소제목 ===`, `[[문서명|보일 글자]]`, `'''굵게'''`, `[보일 글자](주소)` — 은 기호째 오므로 여기서 벗긴다.
  * 강조 위치는 서버가 정한 것을 글자 단위로 따라가 그대로 지킨다.
  *
  * 스니펫 양끝에서 잘린 문법(`…명|보일 글자]]`)과, 줄이 이어 붙어 글자와 구별할 수 없게 된 목록 기호(`* `)는 남는다.
@@ -62,17 +62,27 @@ function markInlineSyntax(
   remove: (from: number, to: number) => void,
 ) {
   for (const match of text.matchAll(INLINE_TOKEN)) {
-    const [token, linkBody, boldBody] = match;
+    const [token, linkBody, boldBody, markdownLabel] = match;
     const start = offset + match.index;
     const end = start + token.length;
 
-    if (linkBody === undefined) {
+    if (boldBody !== undefined) {
       remove(start, start + 3);
       remove(end - 3, end);
       // 굵은 글씨 안의 링크도 문서 화면에서는 링크로 그려진다.
       markInlineSyntax(boldBody, start + 3, remove);
       continue;
     }
+
+    // 문서 화면은 `[보일 글자](주소)`의 글자만 보인다.
+    if (markdownLabel !== undefined) {
+      remove(start, start + 1);
+      remove(start + 1 + markdownLabel.length, end);
+      continue;
+    }
+
+    // 주소만 적은 링크는 문서 화면에서도 주소 그대로 보인다.
+    if (linkBody === undefined) continue;
 
     const separator = linkBody.indexOf("|");
     const target = separator === -1 ? linkBody : linkBody.slice(0, separator);

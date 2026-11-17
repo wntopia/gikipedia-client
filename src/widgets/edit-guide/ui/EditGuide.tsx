@@ -16,6 +16,10 @@ export function EditGuide() {
           연결합니다.
         </p>
         <p className="mb-3 text-[13px] leading-[1.8] text-fg-soft">
+          <span className={CODE_CHIP}>[[https://주소|글자]]</span> 로 바깥
+          사이트를 연결합니다. 주소만 적어도 링크가 됩니다.
+        </p>
+        <p className="mb-3 text-[13px] leading-[1.8] text-fg-soft">
           <span className={CODE_CHIP}>&apos;&apos;&apos;글자&apos;&apos;&apos;</span>{" "}
           로 굵게 씁니다.
         </p>
